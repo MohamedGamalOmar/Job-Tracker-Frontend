@@ -46,8 +46,11 @@ The backend must allow the frontend origin via its `CORS_ORIGIN` env var
   any `401` clears the stored token and redirects to `/login` (except on the
   auth pages themselves).
 - **Public:** dashboard, job browsing (`GET /api/jobs*`), job details.
-- **Protected (login required):** `/import`, `/saved`, all `/api/imports/*`
-  and `/api/saved-jobs/*` endpoints.
+- **Protected (login required):** `/saved`, `/api/saved-jobs/*`.
+- **Admin only:** `/admin/*` (stats, user management, system info, imports).
+  `/api/imports/*` endpoints require an admin token — regular users get 403.
+  The first admin is created by listing emails in the backend's
+  `ADMIN_EMAILS` env var before they register/log in.
 - Jobs are read-only — there is no create/edit/delete UI.
 
 ## Features
@@ -62,7 +65,7 @@ The backend must allow the frontend origin via its `CORS_ORIGIN` env var
 - **Saved jobs** (`/saved`) — bookmark any job from cards or the details page;
   saved jobs are listed here and can be unsaved.
 - **Job details** — full job information with an "Open original job" link.
-- **Import Jobs** (login required) —
+- **Import Jobs** (admin only, `/admin/imports`) —
   - Platform imports: Wuzzuf, LinkedIn, Glassdoor, Indeed (`POST /api/imports/*`).
     These call the real backend integrations; failures from the upstream
     provider are surfaced as errors — a successful response only means the

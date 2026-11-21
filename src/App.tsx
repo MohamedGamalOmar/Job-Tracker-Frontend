@@ -2,12 +2,16 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import { AppLayout } from './layouts/AppLayout';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { AdminRoute } from './components/AdminRoute';
 import { DashboardPage } from './pages/DashboardPage';
 import { JobsPage } from './pages/JobsPage';
 import { JobDetailsPage } from './pages/JobDetailsPage';
 import { SavedJobsPage } from './pages/SavedJobsPage';
 import { ImportPage } from './pages/ImportPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
+import { AdminUsersPage } from './pages/admin/AdminUsersPage';
+import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
@@ -35,15 +39,42 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="import" element={<Navigate to="/admin/imports" replace />} />
+            <Route path="settings" element={<SettingsPage />} />
+
             <Route
-              path="import"
+              path="admin"
               element={
-                <ProtectedRoute>
-                  <ImportPage />
-                </ProtectedRoute>
+                <AdminRoute>
+                  <AdminDashboardPage />
+                </AdminRoute>
               }
             />
-            <Route path="settings" element={<SettingsPage />} />
+            <Route
+              path="admin/users"
+              element={
+                <AdminRoute>
+                  <AdminUsersPage />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="admin/imports"
+              element={
+                <AdminRoute>
+                  <ImportPage />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="admin/settings"
+              element={
+                <AdminRoute>
+                  <AdminSettingsPage />
+                </AdminRoute>
+              }
+            />
+
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

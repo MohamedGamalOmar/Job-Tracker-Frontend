@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import { toast } from 'sonner';
 import type { ApiEnvelope } from '../types';
 
 const TOKEN_KEY = 'job_tracker_token';
@@ -58,6 +59,11 @@ apiClient.interceptors.response.use(
         window.location.href = '/login';
       }
     }
+
+    if (error.response?.status === 403) {
+      toast.error('Admin access required');
+    }
+
     return Promise.reject(error);
   },
 );

@@ -9,6 +9,8 @@ import {
   importLinkedIn,
   importWuzzuf,
 } from '../api/imports.api';
+import { runScheduledImports } from '../api/admin.api';
+import type { RunImportsResult } from '../types';
 import { getApiErrorMessage } from '../api/axios';
 import { Badge, Button, Card, Field, Input, Select, Textarea } from '../components/ui';
 import type { ImportSummary, SourceImportSummary } from '../types';
@@ -621,6 +623,68 @@ function PlatformsTab() {
   );
 }
 
+function RunScheduledCard() {
+  const queryClient = useQueryClient();
+  const [result, setResult] = useState<RunImportsResult | null>(null);
+
+  const mutation = useMutation({
+    mutationFn: runScheduledImports,
+    onSuccess: (r) => {
+      setResult(r);
+      const failed = r.results.filter((x) => !x.ok).length;
+      toast.success(
+        failed > 0
+          ? `Scheduled imports finished: ${r.results.length - failed} ok, ${failed} failed`
+          : `Scheduled imports finished: ${r.results.length} ok`,
+      );
+      invalidateJobQueries(queryClient);
+    },
+    onError: (e) => toast.error(getApiErrorMessage(e)),
+  });
+
+  return (
+    <Card className="p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h3 className="text-sm font-semibold text-neutral-900">Scheduled imports</h3>
+          <p className="mt-1 text-xs text-neutral-500">
+            Runs the import schedules configured on the backend
+            (JOB_IMPORT_SCHEDULES) immediately.
+          </p>
+        </div>
+        <Button onClick={() => mutation.mutate()} loading={mutation.isPending} disabled={mutation.isPending}>
+          Run scheduled imports
+        </Button>
+      </div>
+      {result && (
+        <div className="mt-4 space-y-2">
+          <p className="text-xs text-neutral-400">Ran at {new Date(result.ranAt).toLocaleString()}</p>
+          {result.results.length === 0 && (
+            <p className="text-sm text-neutral-500">No schedules configured.</p>
+          )}
+          {result.results.map((r) => (
+            <div
+              key={r.source}
+              className="flex items-center justify-between rounded-lg border border-neutral-200 px-3 py-2 text-sm"
+            >
+              <span className="font-medium capitalize text-neutral-900">{r.source}</span>
+              {r.ok ? (
+                <span className="text-emerald-700">
+                  {r.summary
+                    ? `${r.summary.inserted} inserted, ${r.summary.duplicates} duplicates`
+                    : 'OK'}
+                </span>
+              ) : (
+                <span className="text-red-600">{r.error ?? 'Failed'}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+}
+
 export function ImportPage() {
   const [tab, setTab] = useState<Tab>('platforms');
 
@@ -638,6 +702,8 @@ export function ImportPage() {
           Collect jobs from supported platforms or import your own data.
         </p>
       </div>
+
+      <RunScheduledCard />
 
       <div className="flex gap-1 rounded-lg bg-neutral-100 p-1 w-fit">
         {tabs.map((t) => (

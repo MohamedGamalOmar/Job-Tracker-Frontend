@@ -80,10 +80,44 @@ export interface ApiEnvelope<T> {
   errors?: ApiErrorItem[];
 }
 
+export type UserRole = 'user' | 'admin';
+
 export interface User {
   id: number;
   email: string;
+  role: UserRole;
   createdAt: string;
+}
+
+export interface AdminStats {
+  users: number;
+  admins: number;
+  jobs: number;
+  jobsBySource: Record<string, number>;
+  savedJobs: number;
+}
+
+export interface SystemInfo {
+  nodeEnv: string;
+  database: 'turso' | 'sqlite-file' | string;
+  apishConfigured: boolean;
+  smtpConfigured: boolean;
+  cronSecretConfigured: boolean;
+  jobImportIntervalMinutes: number;
+  scheduledImportsCount: number;
+  scheduledImportsError: string | null;
+}
+
+export interface ScheduledImportResult {
+  source: JobSource;
+  ok: boolean;
+  summary?: SourceImportSummary;
+  error?: string;
+}
+
+export interface RunImportsResult {
+  ranAt: string;
+  results: ScheduledImportResult[];
 }
 
 export interface AuthResponse {
