@@ -12,6 +12,7 @@ import {
   User,
   Users,
   X,
+  Info,
 } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
 import { cn } from '../lib/utils';
@@ -21,6 +22,7 @@ const navItems = [
   { to: '/jobs', label: 'All Jobs', icon: Briefcase },
   { to: '/saved', label: 'Saved', icon: Bookmark },
   { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/about', label: 'About', icon: Info },
 ];
 
 const adminNavItems = [

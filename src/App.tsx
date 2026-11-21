@@ -9,6 +9,7 @@ import { JobDetailsPage } from './pages/JobDetailsPage';
 import { SavedJobsPage } from './pages/SavedJobsPage';
 import { ImportPage } from './pages/ImportPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { AboutPage } from './pages/AboutPage';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminUsersPage } from './pages/admin/AdminUsersPage';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
@@ -41,6 +42,7 @@ export default function App() {
             />
             <Route path="import" element={<Navigate to="/admin/imports" replace />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="about" element={<AboutPage />} />
 
             <Route
               path="admin"
