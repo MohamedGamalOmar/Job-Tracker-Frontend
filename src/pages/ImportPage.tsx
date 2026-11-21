@@ -28,6 +28,21 @@ function numOrUndef(v: string): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
+function importSuccessToast(source: string, s: SourceImportSummary) {
+  const base = `${source} import finished: ${s.inserted} inserted`;
+  toast.success(
+    s.filteredByQuery && s.filteredByQuery > 0
+      ? `${base} (${s.filteredByQuery} filtered out by strict matching)`
+      : base,
+  );
+}
+
+function invalidateJobQueries(queryClient: ReturnType<typeof useQueryClient>) {
+  queryClient.invalidateQueries({ queryKey: ['jobs'] });
+  queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+  queryClient.invalidateQueries({ queryKey: ['saved-jobs'] });
+}
+
 function ImportResult({ summary }: { summary: ImportSummary | SourceImportSummary }) {
   const sourceSummary = summary as SourceImportSummary;
   return (
@@ -53,6 +68,12 @@ function ImportResult({ summary }: { summary: ImportSummary | SourceImportSummar
         {sourceSummary.providerTotal !== null && sourceSummary.providerTotal !== undefined && (
           <span>
             Provider total: <strong>{sourceSummary.providerTotal}</strong>
+          </span>
+        )}
+        {sourceSummary.filteredByQuery !== undefined && sourceSummary.filteredByQuery > 0 && (
+          <span className="text-violet-700">
+            Filtered out by strict matching:{' '}
+            <strong>{sourceSummary.filteredByQuery}</strong>
           </span>
         )}
       </div>
@@ -102,7 +123,7 @@ function PlatformCard({
   );
 }
 
-function WuzzufForm() {
+function WuzzufForm({ strict }: { strict: boolean }) {
   const queryClient = useQueryClient();
   const [f, setF] = useState({
     query: '', country: 'Egypt', workplace: '', careerLevel: '',
@@ -121,12 +142,12 @@ function WuzzufForm() {
           careerLevel: f.careerLevel || undefined,
           postedWithinDays: numOrUndef(f.postedWithinDays),
           maxPages: numOrUndef(f.maxPages) ?? 1,
+          strictQuery: strict ? true : undefined,
         }),
       ),
     onSuccess: (s) => {
-      toast.success(`Wuzzuf import finished: ${s.inserted} inserted`);
-      queryClient.invalidateQueries({ queryKey: ['jobs'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      importSuccessToast('Wuzzuf', s);
+      invalidateJobQueries(queryClient);
     },
     onError: (e) => toast.error(getApiErrorMessage(e)),
   });
@@ -173,7 +194,7 @@ function WuzzufForm() {
   );
 }
 
-function LinkedInForm() {
+function LinkedInForm({ strict }: { strict: boolean }) {
   const queryClient = useQueryClient();
   const [f, setF] = useState({
     query: '', location: 'Cairo, Egypt', distance: '25', posted: 'week',
@@ -192,12 +213,12 @@ function LinkedInForm() {
           posted: f.posted === 'any' ? undefined : f.posted,
           easyApply: f.easyApply || undefined,
           maxPages: numOrUndef(f.maxPages) ?? 1,
+          strictQuery: strict ? true : undefined,
         }),
       ),
     onSuccess: (s) => {
-      toast.success(`LinkedIn import finished: ${s.inserted} inserted`);
-      queryClient.invalidateQueries({ queryKey: ['jobs'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      importSuccessToast('LinkedIn', s);
+      invalidateJobQueries(queryClient);
     },
     onError: (e) => toast.error(getApiErrorMessage(e)),
   });
@@ -249,7 +270,7 @@ function LinkedInForm() {
   );
 }
 
-function GlassdoorForm() {
+function GlassdoorForm({ strict }: { strict: boolean }) {
   const queryClient = useQueryClient();
   const [f, setF] = useState({
     query: '', location: 'Cairo', fromAge: '7', remote: false, easyApply: false,
@@ -269,12 +290,12 @@ function GlassdoorForm() {
           easyApply: f.easyApply || undefined,
           jobType: f.jobType || undefined,
           maxPages: numOrUndef(f.maxPages) ?? 1,
+          strictQuery: strict ? true : undefined,
         }),
       ),
     onSuccess: (s) => {
-      toast.success(`Glassdoor import finished: ${s.inserted} inserted`);
-      queryClient.invalidateQueries({ queryKey: ['jobs'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      importSuccessToast('Glassdoor', s);
+      invalidateJobQueries(queryClient);
     },
     onError: (e) => toast.error(getApiErrorMessage(e)),
   });
@@ -330,7 +351,7 @@ function GlassdoorForm() {
   );
 }
 
-function IndeedForm() {
+function IndeedForm({ strict }: { strict: boolean }) {
   const queryClient = useQueryClient();
   const [f, setF] = useState({
     query: '', location: '', date: '7', sort: 'date', jobType: '', experience: '', remote: '',
@@ -349,12 +370,12 @@ function IndeedForm() {
           jobType: f.jobType || undefined,
           experience: f.experience || undefined,
           remote: f.remote || undefined,
+          strictQuery: strict ? true : undefined,
         }),
       ),
     onSuccess: (s) => {
-      toast.success(`Indeed import finished: ${s.inserted} inserted`);
-      queryClient.invalidateQueries({ queryKey: ['jobs'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      importSuccessToast('Indeed', s);
+      invalidateJobQueries(queryClient);
     },
     onError: (e) => toast.error(getApiErrorMessage(e)),
   });
@@ -552,6 +573,54 @@ function CsvImport() {
   );
 }
 
+const STRICT_PREF_KEY = 'jt_strict_import';
+
+function PlatformsTab() {
+  const [strict, setStrict] = useState(
+    () => localStorage.getItem(STRICT_PREF_KEY) === '1',
+  );
+
+  function handleToggle(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.checked;
+    setStrict(value);
+    try {
+      localStorage.setItem(STRICT_PREF_KEY, value ? '1' : '0');
+    } catch {
+      // storage unavailable — preference just won't persist
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <Card className="flex items-start gap-3 p-4">
+        <input
+          id="strict-matching"
+          type="checkbox"
+          checked={strict}
+          onChange={handleToggle}
+          className="mt-0.5 h-4 w-4 rounded border-neutral-300"
+        />
+        <div>
+          <label htmlFor="strict-matching" className="text-sm font-medium text-neutral-900">
+            Strict matching
+          </label>
+          <p className="mt-0.5 text-xs text-neutral-500">
+            Only import jobs whose title or skills contain every word of your search
+            query. Turn off to import all provider results (provider search is fuzzy).
+            Applies to all four platforms.
+          </p>
+        </div>
+      </Card>
+      <div className="grid gap-5 xl:grid-cols-2">
+        <WuzzufForm strict={strict} />
+        <LinkedInForm strict={strict} />
+        <GlassdoorForm strict={strict} />
+        <IndeedForm strict={strict} />
+      </div>
+    </div>
+  );
+}
+
 export function ImportPage() {
   const [tab, setTab] = useState<Tab>('platforms');
 
@@ -585,14 +654,7 @@ export function ImportPage() {
         ))}
       </div>
 
-      {tab === 'platforms' && (
-        <div className="grid gap-5 xl:grid-cols-2">
-          <WuzzufForm />
-          <LinkedInForm />
-          <GlassdoorForm />
-          <IndeedForm />
-        </div>
-      )}
+      {tab === 'platforms' && <PlatformsTab />}
       {tab === 'json' && <JsonImport />}
       {tab === 'csv' && <CsvImport />}
     </div>

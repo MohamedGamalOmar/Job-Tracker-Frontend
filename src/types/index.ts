@@ -64,6 +64,7 @@ export interface ImportSummary {
 export interface SourceImportSummary extends ImportSummary {
   pagesFetched: number;
   providerTotal: number | null;
+  filteredByQuery?: number;
 }
 
 export interface ApiErrorItem {
