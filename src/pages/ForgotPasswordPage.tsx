@@ -43,10 +43,10 @@ export function ForgotPasswordPage() {
       subtitle="Enter your account email and we'll send you a reset link."
     >
       {result ? (
-        <div className="space-y-4 text-sm text-neutral-600">
+        <div className="space-y-4 text-sm text-ink-2">
           <p>{result.message ?? 'If an account exists for this email, a reset link has been sent.'}</p>
           {result.resetUrl && (
-            <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-800">
+            <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
               Dev mode: your reset link is{' '}
               <a href={result.resetUrl} className="font-medium underline">
                 here
@@ -54,7 +54,7 @@ export function ForgotPasswordPage() {
               .
             </p>
           )}
-          <Link to="/login" className="inline-block font-medium text-neutral-900 hover:underline">
+          <Link to="/login" className="inline-block font-medium text-ink hover:underline">
             Back to log in
           </Link>
         </div>
@@ -72,8 +72,8 @@ export function ForgotPasswordPage() {
           <Button type="submit" className="w-full" loading={isPending}>
             Send reset link
           </Button>
-          <p className="text-center text-sm text-neutral-500">
-            <Link to="/login" className="font-medium text-neutral-900 hover:underline">
+          <p className="text-center text-sm text-ink-3">
+            <Link to="/login" className="font-medium text-ink hover:underline">
               Back to log in
             </Link>
           </p>

@@ -57,8 +57,8 @@ export function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold text-neutral-900">Dashboard</h2>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h2 className="text-xl font-semibold text-ink">Dashboard</h2>
+        <p className="mt-1 text-sm text-ink-3">
           Overview of your collected job opportunities.
         </p>
       </div>
@@ -70,7 +70,7 @@ export function DashboardPage() {
         />
       )}
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-6">
+      <div className="stagger grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-6">
         {statsQuery.isLoading ? (
           Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-24" />)
         ) : stats ? (
@@ -96,10 +96,10 @@ export function DashboardPage() {
 
       <section>
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-base font-semibold text-neutral-900">Recent jobs</h3>
+          <h3 className="text-base font-semibold text-ink">Recent jobs</h3>
           <Link
             to="/jobs"
-            className="inline-flex items-center gap-1 text-sm font-medium text-neutral-600 hover:text-neutral-900"
+            className="inline-flex items-center gap-1 text-sm font-medium text-ink-2 hover:text-ink"
           >
             View all
             <ArrowRight className="h-4 w-4" />
@@ -107,7 +107,7 @@ export function DashboardPage() {
         </div>
 
         {recentQuery.isLoading ? (
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="stagger grid gap-4 lg:grid-cols-2">
             {Array.from({ length: 4 }).map((_, i) => (
               <JobCardSkeleton key={i} />
             ))}
@@ -118,11 +118,11 @@ export function DashboardPage() {
             onRetry={() => recentQuery.refetch()}
           />
         ) : (recentQuery.data?.jobs.length ?? 0) === 0 ? (
-          <Card className="p-8 text-center text-sm text-neutral-500">
+          <Card className="p-8 text-center text-sm text-ink-3">
             No jobs yet. Import jobs to get started.
           </Card>
         ) : (
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="stagger grid gap-4 lg:grid-cols-2">
             {recentQuery.data!.jobs.map((job) => (
               <JobCard key={job.id} job={job} />
             ))}
@@ -146,11 +146,11 @@ function StatCard({
 }) {
   const content = (
     <Card className="p-4 transition-shadow hover:shadow-md">
-      <div className="flex items-center gap-2 text-neutral-500">
+      <div className="flex items-center gap-2 text-ink-3">
         <Icon className="h-4 w-4" />
         <span className="text-xs font-medium">{label}</span>
       </div>
-      <p className="mt-2 text-2xl font-semibold text-neutral-900">{value}</p>
+      <p className="mt-2 text-2xl font-semibold text-ink">{value}</p>
     </Card>
   );
   return to ? <Link to={to}>{content}</Link> : content;

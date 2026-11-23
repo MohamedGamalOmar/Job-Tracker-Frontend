@@ -17,14 +17,14 @@ export function SavedJobsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-xl font-semibold text-neutral-900">Saved jobs</h2>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h2 className="text-xl font-semibold text-ink">Saved jobs</h2>
+        <p className="mt-1 text-sm text-ink-3">
           Jobs you bookmarked for later.
         </p>
       </div>
 
       {query.isLoading ? (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="stagger grid gap-4 lg:grid-cols-2">
           {Array.from({ length: 4 }).map((_, i) => (
             <JobCardSkeleton key={i} />
           ))}
@@ -42,7 +42,7 @@ export function SavedJobsPage() {
           }
         />
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="stagger grid gap-4 lg:grid-cols-2">
           {jobs.map((job) => (
             <JobCard key={job.id} job={job} />
           ))}
@@ -50,7 +50,7 @@ export function SavedJobsPage() {
       )}
 
       {query.data && query.data.length > 0 && (
-        <p className="flex items-center gap-1.5 text-xs text-neutral-400">
+        <p className="flex items-center gap-1.5 text-xs text-ink-4">
           <Bookmark className="h-3.5 w-3.5" />
           {jobs.length} saved job{jobs.length === 1 ? '' : 's'}
         </p>

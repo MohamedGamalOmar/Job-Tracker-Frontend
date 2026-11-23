@@ -17,8 +17,8 @@ function StatusBadge({ ok, label }: { ok: boolean; label?: string }) {
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-4 py-2.5">
-      <span className="text-sm text-neutral-500">{label}</span>
-      <span className="text-sm font-medium text-neutral-900">{children}</span>
+      <span className="text-sm text-ink-3">{label}</span>
+      <span className="text-sm font-medium text-ink">{children}</span>
     </div>
   );
 }
@@ -34,8 +34,8 @@ export function AdminSettingsPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-neutral-900">Admin settings</h2>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h2 className="text-xl font-semibold text-ink">Admin settings</h2>
+        <p className="mt-1 text-sm text-ink-3">
           Backend configuration status. Secrets are never exposed.
         </p>
       </div>
@@ -49,7 +49,7 @@ export function AdminSettingsPage() {
       ) : query.isError ? (
         <ErrorState message={getApiErrorMessage(query.error)} onRetry={() => query.refetch()} />
       ) : info ? (
-        <Card className="divide-y divide-neutral-100 p-6">
+        <Card className="divide-y divide-line p-6">
           <Row label="Environment">
             <Badge tone={info.nodeEnv === 'production' ? 'blue' : 'amber'}>{info.nodeEnv}</Badge>
           </Row>
@@ -71,7 +71,7 @@ export function AdminSettingsPage() {
               : 'Disabled (manual only)'}
           </Row>
           <Row label="Scheduled imports">
-            <span className={cn(info.scheduledImportsError && 'text-red-600')}>
+            <span className={cn(info.scheduledImportsError && 'text-red-600 dark:text-red-400')}>
               {info.scheduledImportsError
                 ? info.scheduledImportsError
                 : `${info.scheduledImportsCount} configured`}

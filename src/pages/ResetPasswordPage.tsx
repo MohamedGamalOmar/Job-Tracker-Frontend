@@ -41,7 +41,7 @@ export function ResetPasswordPage() {
   return (
     <AuthLayout title="Choose a new password" subtitle="Enter a new password for your account.">
       {!token && (
-        <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+        <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-300">
           This reset link is missing its token. Request a new one from the{' '}
           <Link to="/forgot-password" className="font-medium underline">
             forgot password
@@ -68,7 +68,7 @@ export function ResetPasswordPage() {
             onChange={(e) => setConfirm(e.target.value)}
           />
         </Field>
-        {errors.token && <p className="text-xs text-red-600">{errors.token}</p>}
+        {errors.token && <p className="text-xs text-red-600 dark:text-red-400">{errors.token}</p>}
         <Button type="submit" className="w-full" loading={isPending} disabled={!token}>
           Update password
         </Button>

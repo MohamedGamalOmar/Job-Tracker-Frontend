@@ -31,12 +31,15 @@ export function SaveButton({ jobId, saved, className }: { jobId: number; saved: 
       className={cn(
         'rounded-lg p-1.5 transition-colors disabled:opacity-50',
         saved
-          ? 'text-amber-500 hover:bg-amber-50'
-          : 'text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600',
+          ? 'text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10'
+          : 'text-ink-4 hover:bg-sunken hover:text-ink-2',
         className,
       )}
     >
-      <Bookmark className={cn('h-4 w-4', saved && 'fill-amber-400')} />
+      <Bookmark
+        key={String(saved)}
+        className={cn('h-4 w-4 animate-pop', saved && 'fill-amber-400')}
+      />
     </button>
   );
 }

@@ -58,7 +58,7 @@ export function LoginPage() {
           />
         </Field>
         <div className="text-right">
-          <Link to="/forgot-password" className="text-sm text-neutral-500 hover:text-neutral-800">
+          <Link to="/forgot-password" className="text-sm text-ink-3 hover:text-ink">
             Forgot password?
           </Link>
         </div>
@@ -66,9 +66,9 @@ export function LoginPage() {
           Log in
         </Button>
       </form>
-      <p className="mt-4 text-center text-sm text-neutral-500">
+      <p className="mt-4 text-center text-sm text-ink-3">
         No account?{' '}
-        <Link to="/register" className="font-medium text-neutral-900 hover:underline">
+        <Link to="/register" className="font-medium text-ink hover:underline">
           Register
         </Link>
       </p>

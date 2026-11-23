@@ -17,8 +17,8 @@ export function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-neutral-900">Admin dashboard</h2>
-        <p className="mt-1 text-sm text-neutral-500">Platform-wide statistics.</p>
+        <h2 className="text-xl font-semibold text-ink">Admin dashboard</h2>
+        <p className="mt-1 text-sm text-ink-3">Platform-wide statistics.</p>
       </div>
 
       {statsQuery.isLoading ? (
@@ -43,10 +43,10 @@ export function AdminDashboardPage() {
 
           <Card className="p-5">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-neutral-900">Jobs by source</h3>
+              <h3 className="text-sm font-semibold text-ink">Jobs by source</h3>
               <Link
                 to="/admin/users"
-                className="inline-flex items-center gap-1 text-sm font-medium text-neutral-600 hover:text-neutral-900"
+                className="inline-flex items-center gap-1 text-sm font-medium text-ink-2 hover:text-ink"
               >
                 Manage users
                 <ArrowRight className="h-4 w-4" />
@@ -54,15 +54,15 @@ export function AdminDashboardPage() {
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
               {Object.entries(stats.jobsBySource).length === 0 && (
-                <p className="text-sm text-neutral-400">No jobs yet.</p>
+                <p className="text-sm text-ink-4">No jobs yet.</p>
               )}
               {Object.entries(stats.jobsBySource).map(([source, count]) => (
                 <div
                   key={source}
-                  className="rounded-lg border border-neutral-200 px-3 py-2.5"
+                  className="rounded-lg border border-line px-3 py-2.5"
                 >
-                  <p className="text-xs text-neutral-500">{sourceLabels[source] ?? source}</p>
-                  <p className="mt-0.5 text-lg font-semibold text-neutral-900">{count}</p>
+                  <p className="text-xs text-ink-3">{sourceLabels[source] ?? source}</p>
+                  <p className="mt-0.5 text-lg font-semibold text-ink">{count}</p>
                 </div>
               ))}
             </div>
@@ -84,11 +84,11 @@ function StatCard({
 }) {
   return (
     <Card className="p-4">
-      <div className="flex items-center gap-2 text-neutral-500">
+      <div className="flex items-center gap-2 text-ink-3">
         <Icon className="h-4 w-4" />
         <span className="text-xs font-medium">{label}</span>
       </div>
-      <p className="mt-2 text-2xl font-semibold text-neutral-900">{value}</p>
+      <p className="mt-2 text-2xl font-semibold text-ink">{value}</p>
     </Card>
   );
 }

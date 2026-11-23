@@ -11,16 +11,16 @@ export function JobCard({ job }: { job: Job }) {
   const extraSkills = job.requiredSkills.length - skills.length;
 
   return (
-    <Card className="flex flex-col p-5 transition-shadow hover:shadow-md">
+    <Card className="flex flex-col p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-line-strong hover:shadow-lg dark:hover:shadow-black/40">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <Link
             to={`/jobs/${job.id}`}
-            className="text-base font-semibold text-neutral-900 hover:underline"
+            className="text-base font-semibold text-ink transition-colors hover:text-ink-3"
           >
             {job.title}
           </Link>
-          <p className="mt-0.5 text-sm text-neutral-500">{job.company ?? 'Company not specified'}</p>
+          <p className="mt-0.5 text-sm text-ink-3">{job.company ?? 'Company not specified'}</p>
         </div>
         <div className="flex items-center gap-1">
           <SaveButton jobId={job.id} saved={job.saved} />
@@ -28,7 +28,7 @@ export function JobCard({ job }: { job: Job }) {
         </div>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-neutral-500">
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-ink-3">
         {job.location && (
           <span className="inline-flex items-center gap-1">
             <MapPin className="h-3.5 w-3.5" />
@@ -38,11 +38,11 @@ export function JobCard({ job }: { job: Job }) {
         <span>Posted {formatDate(job.postedAt)}</span>
         <span>{formatExperience(job)}</span>
         <WorkplaceBadge type={job.workplaceType} />
-        {salary && <span className="font-medium text-emerald-700">{salary}</span>}
+        {salary && <span className="font-medium text-emerald-700 dark:text-emerald-400">{salary}</span>}
       </div>
 
       {job.description && (
-        <p className="mt-3 line-clamp-2 text-sm text-neutral-600">{truncate(job.description)}</p>
+        <p className="mt-3 line-clamp-2 text-sm text-ink-2">{truncate(job.description)}</p>
       )}
 
       {skills.length > 0 && (
@@ -54,10 +54,10 @@ export function JobCard({ job }: { job: Job }) {
         </div>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-neutral-100 pt-4">
+      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
         <Link
           to={`/jobs/${job.id}`}
-          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 text-xs font-medium text-neutral-700 ring-1 ring-inset ring-neutral-300 transition-colors hover:bg-neutral-50"
+          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-canvas shadow-sm transition-all duration-150 hover:bg-ink/85 active:scale-[0.97]"
         >
           View details
         </Link>
@@ -65,7 +65,7 @@ export function JobCard({ job }: { job: Job }) {
           href={job.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-neutral-600 ring-1 ring-inset ring-neutral-300 transition-colors hover:bg-neutral-50"
+          className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-ink-3 transition-all duration-150 hover:bg-sunken hover:text-ink active:scale-[0.97]"
         >
           Open original
           <ExternalLink className="h-3.5 w-3.5" />

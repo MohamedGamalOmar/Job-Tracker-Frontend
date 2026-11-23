@@ -48,18 +48,18 @@ function invalidateJobQueries(queryClient: ReturnType<typeof useQueryClient>) {
 function ImportResult({ summary }: { summary: ImportSummary | SourceImportSummary }) {
   const sourceSummary = summary as SourceImportSummary;
   return (
-    <div className="mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm">
+    <div className="mt-4 rounded-lg border border-line bg-canvas p-4 text-sm">
       <div className="flex flex-wrap gap-x-6 gap-y-1">
         <span>
           Received: <strong>{summary.totalReceived}</strong>
         </span>
-        <span className="text-emerald-700">
+        <span className="text-emerald-700 dark:text-emerald-400">
           Inserted: <strong>{summary.inserted}</strong>
         </span>
-        <span className="text-amber-700">
+        <span className="text-amber-700 dark:text-amber-400">
           Duplicates: <strong>{summary.duplicates}</strong>
         </span>
-        <span className="text-red-600">
+        <span className="text-red-600 dark:text-red-400">
           Invalid: <strong>{summary.invalid}</strong>
         </span>
         {sourceSummary.pagesFetched !== undefined && (
@@ -73,7 +73,7 @@ function ImportResult({ summary }: { summary: ImportSummary | SourceImportSummar
           </span>
         )}
         {sourceSummary.filteredByQuery !== undefined && sourceSummary.filteredByQuery > 0 && (
-          <span className="text-violet-700">
+          <span className="text-violet-700 dark:text-violet-300">
             Filtered out by strict matching:{' '}
             <strong>{sourceSummary.filteredByQuery}</strong>
           </span>
@@ -81,8 +81,8 @@ function ImportResult({ summary }: { summary: ImportSummary | SourceImportSummar
       </div>
       {summary.errors.length > 0 && (
         <div className="mt-3">
-          <p className="font-medium text-neutral-700">Errors ({summary.errors.length}):</p>
-          <ul className="mt-1 max-h-40 list-disc space-y-0.5 overflow-y-auto pl-5 text-xs text-neutral-600">
+          <p className="font-medium text-ink-2">Errors ({summary.errors.length}):</p>
+          <ul className="mt-1 max-h-40 list-disc space-y-0.5 overflow-y-auto pl-5 text-xs text-ink-2">
             {summary.errors.slice(0, 20).map((err, i) => (
               <li key={i}>
                 #{err.index}: {err.message}
@@ -114,8 +114,8 @@ function PlatformCard({
 }) {
   return (
     <Card className="flex flex-col p-5">
-      <h3 className="text-sm font-semibold text-neutral-900">{title}</h3>
-      <p className="mt-1 text-xs text-neutral-500">{description}</p>
+      <h3 className="text-sm font-semibold text-ink">{title}</h3>
+      <p className="mt-1 text-xs text-ink-3">{description}</p>
       <div className="mt-4 flex-1 space-y-3">{children}</div>
       <Button className="mt-4 w-full" onClick={onSubmit} loading={isPending} disabled={isPending}>
         {isPending ? 'Importing…' : `Import from ${title}`}
@@ -259,12 +259,12 @@ function LinkedInForm({ strict }: { strict: boolean }) {
           <Input id="l-pages" type="number" min={1} max={30} value={f.maxPages} onChange={set('maxPages')} />
         </Field>
       </div>
-      <label className="flex items-center gap-2 text-sm text-neutral-700">
+      <label className="flex items-center gap-2 text-sm text-ink-2">
         <input
           type="checkbox"
           checked={f.easyApply}
           onChange={(e) => setF((p) => ({ ...p, easyApply: e.target.checked }))}
-          className="h-4 w-4 rounded border-neutral-300"
+          className="h-4 w-4 rounded border-line-strong"
         />
         Easy Apply only
       </label>
@@ -340,12 +340,12 @@ function GlassdoorForm({ strict }: { strict: boolean }) {
         </Field>
       </div>
       <div className="flex gap-4">
-        <label className="flex items-center gap-2 text-sm text-neutral-700">
-          <input type="checkbox" checked={f.remote} onChange={set('remote')} className="h-4 w-4 rounded border-neutral-300" />
+        <label className="flex items-center gap-2 text-sm text-ink-2">
+          <input type="checkbox" checked={f.remote} onChange={set('remote')} className="h-4 w-4 rounded border-line-strong" />
           Remote only
         </label>
-        <label className="flex items-center gap-2 text-sm text-neutral-700">
-          <input type="checkbox" checked={f.easyApply} onChange={set('easyApply')} className="h-4 w-4 rounded border-neutral-300" />
+        <label className="flex items-center gap-2 text-sm text-ink-2">
+          <input type="checkbox" checked={f.easyApply} onChange={set('easyApply')} className="h-4 w-4 rounded border-line-strong" />
           Easy Apply only
         </label>
       </div>
@@ -482,11 +482,11 @@ function JsonImport() {
 
   return (
     <Card className="p-6">
-      <h3 className="text-base font-semibold text-neutral-900">Import jobs from JSON</h3>
-      <p className="mt-1 text-sm text-neutral-500">
+      <h3 className="text-base font-semibold text-ink">Import jobs from JSON</h3>
+      <p className="mt-1 text-sm text-ink-3">
         Paste a JSON array of job objects, or an object like {'{ "jobs": [...] }'}. Each job
-        requires at least <code className="rounded bg-neutral-100 px-1">title</code> and{' '}
-        <code className="rounded bg-neutral-100 px-1">url</code>.
+        requires at least <code className="rounded bg-sunken px-1">title</code> and{' '}
+        <code className="rounded bg-sunken px-1">url</code>.
       </p>
       <div className="mt-4">
         <Textarea
@@ -498,7 +498,7 @@ function JsonImport() {
           aria-label="JSON jobs payload"
         />
       </div>
-      {parseError && <p className="mt-2 text-sm text-red-600">{parseError}</p>}
+      {parseError && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{parseError}</p>}
       <div className="mt-4 flex items-center gap-3">
         <Button onClick={handleImport} loading={mutation.isPending} disabled={!text.trim()}>
           Import JSON
@@ -541,11 +541,11 @@ function CsvImport() {
 
   return (
     <Card className="p-6">
-      <h3 className="text-base font-semibold text-neutral-900">Import jobs from CSV</h3>
-      <p className="mt-1 text-sm text-neutral-500">
+      <h3 className="text-base font-semibold text-ink">Import jobs from CSV</h3>
+      <p className="mt-1 text-sm text-ink-3">
         The CSV must include a header row with at least{' '}
-        <code className="rounded bg-neutral-100 px-1">title</code> and{' '}
-        <code className="rounded bg-neutral-100 px-1">url</code> columns. Supported columns
+        <code className="rounded bg-sunken px-1">title</code> and{' '}
+        <code className="rounded bg-sunken px-1">url</code> columns. Supported columns
         include company, location, source, workplace_type, salary_min, salary_max,
         salary_currency, posted_at, description, required_skills, experience_min,
         experience_max, and experience_level.
@@ -555,16 +555,16 @@ function CsvImport() {
           type="file"
           accept=".csv,text/csv"
           onChange={handleFile}
-          className="block w-full text-sm text-neutral-600 file:mr-4 file:rounded-lg file:border-0 file:bg-neutral-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-neutral-700"
+          className="block w-full text-sm text-ink-2 file:mr-4 file:rounded-lg file:border-0 file:bg-ink file:px-4 file:py-2 file:text-sm file:font-medium file:text-canvas hover:file:bg-ink/85"
           aria-label="CSV file"
         />
         {fileName && !mutation.isPending && (
-          <p className="mt-2 text-xs text-neutral-500">Selected: {fileName}</p>
+          <p className="mt-2 text-xs text-ink-3">Selected: {fileName}</p>
         )}
-        {fileError && <p className="mt-2 text-sm text-red-600">{fileError}</p>}
+        {fileError && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{fileError}</p>}
       </div>
       {mutation.isPending && (
-        <p className="mt-3 text-sm text-neutral-500">Importing {fileName}…</p>
+        <p className="mt-3 text-sm text-ink-3">Importing {fileName}…</p>
       )}
       {mutation.data && (
         <div className="mt-2">
@@ -600,13 +600,13 @@ function PlatformsTab() {
           type="checkbox"
           checked={strict}
           onChange={handleToggle}
-          className="mt-0.5 h-4 w-4 rounded border-neutral-300"
+          className="mt-0.5 h-4 w-4 rounded border-line-strong"
         />
         <div>
-          <label htmlFor="strict-matching" className="text-sm font-medium text-neutral-900">
+          <label htmlFor="strict-matching" className="text-sm font-medium text-ink">
             Strict matching
           </label>
-          <p className="mt-0.5 text-xs text-neutral-500">
+          <p className="mt-0.5 text-xs text-ink-3">
             Only import jobs whose title or skills contain every word of your search
             query. Turn off to import all provider results (provider search is fuzzy).
             Applies to all four platforms.
@@ -646,8 +646,8 @@ function RunScheduledCard() {
     <Card className="p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-neutral-900">Scheduled imports</h3>
-          <p className="mt-1 text-xs text-neutral-500">
+          <h3 className="text-sm font-semibold text-ink">Scheduled imports</h3>
+          <p className="mt-1 text-xs text-ink-3">
             Runs the import schedules configured on the backend
             (JOB_IMPORT_SCHEDULES) immediately.
           </p>
@@ -658,24 +658,24 @@ function RunScheduledCard() {
       </div>
       {result && (
         <div className="mt-4 space-y-2">
-          <p className="text-xs text-neutral-400">Ran at {new Date(result.ranAt).toLocaleString()}</p>
+          <p className="text-xs text-ink-4">Ran at {new Date(result.ranAt).toLocaleString()}</p>
           {result.results.length === 0 && (
-            <p className="text-sm text-neutral-500">No schedules configured.</p>
+            <p className="text-sm text-ink-3">No schedules configured.</p>
           )}
           {result.results.map((r) => (
             <div
               key={r.source}
-              className="flex items-center justify-between rounded-lg border border-neutral-200 px-3 py-2 text-sm"
+              className="flex items-center justify-between rounded-lg border border-line px-3 py-2 text-sm"
             >
-              <span className="font-medium capitalize text-neutral-900">{r.source}</span>
+              <span className="font-medium capitalize text-ink">{r.source}</span>
               {r.ok ? (
-                <span className="text-emerald-700">
+                <span className="text-emerald-700 dark:text-emerald-400">
                   {r.summary
                     ? `${r.summary.inserted} inserted, ${r.summary.duplicates} duplicates`
                     : 'OK'}
                 </span>
               ) : (
-                <span className="text-red-600">{r.error ?? 'Failed'}</span>
+                <span className="text-red-600 dark:text-red-400">{r.error ?? 'Failed'}</span>
               )}
             </div>
           ))}
@@ -697,21 +697,21 @@ export function ImportPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-neutral-900">Import jobs</h2>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h2 className="text-xl font-semibold text-ink">Import jobs</h2>
+        <p className="mt-1 text-sm text-ink-3">
           Collect jobs from supported platforms or import your own data.
         </p>
       </div>
 
       <RunScheduledCard />
 
-      <div className="flex gap-1 rounded-lg bg-neutral-100 p-1 w-fit">
+      <div className="flex gap-1 rounded-lg bg-sunken p-1 w-fit">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${
-              tab === t.key ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-800'
+            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
+              tab === t.key ? 'bg-surface text-ink shadow-sm' : 'text-ink-3 hover:text-ink'
             }`}
           >
             {t.label}

@@ -190,8 +190,8 @@ export function JobsPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-semibold text-neutral-900">All jobs</h2>
-          <p className="mt-1 text-sm text-neutral-500">
+          <h2 className="text-xl font-semibold text-ink">All jobs</h2>
+          <p className="mt-1 text-sm text-ink-3">
             {meta ? `${meta.total} job${meta.total === 1 ? '' : 's'} found` : 'Loading…'}
           </p>
         </div>
@@ -200,7 +200,7 @@ export function JobsPage() {
             <SlidersHorizontal className="h-4 w-4" />
             Filters
             {activeFilterCount > 0 && (
-              <span className="ml-1 rounded-full bg-neutral-900 px-1.5 text-xs text-white">{activeFilterCount}</span>
+              <span className="ml-1 rounded-full bg-ink px-1.5 text-xs text-canvas">{activeFilterCount}</span>
             )}
           </Button>
         </div>
@@ -208,7 +208,7 @@ export function JobsPage() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-4" />
           <Input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -219,7 +219,7 @@ export function JobsPage() {
           {searchInput && (
             <button
               onClick={() => setSearchInput('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-4 hover:text-ink-2"
               aria-label="Clear search"
             >
               <X className="h-4 w-4" />
@@ -238,7 +238,7 @@ export function JobsPage() {
           {titleInput && (
             <button
               onClick={() => setTitleInput('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-4 hover:text-ink-2"
               aria-label="Clear title filter"
             >
               <X className="h-4 w-4" />
@@ -246,7 +246,7 @@ export function JobsPage() {
           )}
         </div>
       </div>
-      <p className="-mt-3 text-xs text-neutral-400">
+      <p className="-mt-3 text-xs text-ink-4">
         Left searches title + company + skills; right filters the title only.
       </p>
 
@@ -255,14 +255,14 @@ export function JobsPage() {
       {(q || activeFilterCount > 0) && (
         <button
           onClick={clearFilters}
-          className="text-sm font-medium text-neutral-500 hover:text-neutral-800"
+          className="text-sm font-medium text-ink-3 hover:text-ink"
         >
           Clear all filters
         </button>
       )}
 
       {query.isLoading ? (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="stagger grid gap-4 lg:grid-cols-2">
           {Array.from({ length: 6 }).map((_, i) => (
             <JobCardSkeleton key={i} />
           ))}
@@ -280,7 +280,7 @@ export function JobsPage() {
           }
         />
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="stagger grid gap-4 lg:grid-cols-2">
           {jobs.map((job) => (
             <JobCard key={job.id} job={job} />
           ))}
@@ -289,7 +289,7 @@ export function JobsPage() {
 
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-ink-3">
             Page {meta.page} of {meta.totalPages}
           </p>
           <div className="flex gap-2">

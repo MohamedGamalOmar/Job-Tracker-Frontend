@@ -49,14 +49,14 @@ export function AdminUsersPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-xl font-semibold text-neutral-900">Users</h2>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h2 className="text-xl font-semibold text-ink">Users</h2>
+        <p className="mt-1 text-sm text-ink-3">
           Manage user roles. Only admins can import jobs.
         </p>
       </div>
 
       {usersQuery.isLoading ? (
-        <Card className="divide-y divide-neutral-100">
+        <Card className="divide-y divide-line">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex items-center gap-4 p-4">
               <Skeleton className="h-4 w-48" />
@@ -75,33 +75,33 @@ export function AdminUsersPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-neutral-200 bg-neutral-50 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
+                <tr className="border-b border-line bg-canvas text-left text-xs font-medium uppercase tracking-wide text-ink-3">
                   <th className="px-4 py-3">Email</th>
                   <th className="px-4 py-3">Role</th>
                   <th className="px-4 py-3">Joined</th>
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-100">
+              <tbody className="divide-y divide-line">
                 {users.map((u) => {
                   const isSelf = u.id === currentUser?.id;
                   const demoting = pendingDemote === u.id;
                   return (
-                    <tr key={u.id} className="hover:bg-neutral-50/60">
-                      <td className="px-4 py-3 font-medium text-neutral-900">
+                    <tr key={u.id} className="hover:bg-sunken/60">
+                      <td className="px-4 py-3 font-medium text-ink">
                         {u.email}
-                        {isSelf && <span className="ml-2 text-xs text-neutral-400">(you)</span>}
+                        {isSelf && <span className="ml-2 text-xs text-ink-4">(you)</span>}
                       </td>
                       <td className="px-4 py-3">
                         <Badge tone={u.role === 'admin' ? 'purple' : 'neutral'}>{u.role}</Badge>
                       </td>
-                      <td className="px-4 py-3 text-neutral-500">{formatDate(u.createdAt)}</td>
+                      <td className="px-4 py-3 text-ink-3">{formatDate(u.createdAt)}</td>
                       <td className="px-4 py-3 text-right">
                         {isSelf ? (
-                          <span className="text-xs text-neutral-400">—</span>
+                          <span className="text-xs text-ink-4">—</span>
                         ) : demoting ? (
                           <span className="inline-flex items-center gap-2">
-                            <span className="text-xs text-neutral-600">Remove admin?</span>
+                            <span className="text-xs text-ink-2">Remove admin?</span>
                             <Button
                               variant="danger"
                               className="px-2.5 py-1 text-xs"
@@ -134,7 +134,7 @@ export function AdminUsersPage() {
                 })}
                 {users.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-neutral-400">
+                    <td colSpan={4} className="px-4 py-8 text-center text-ink-4">
                       No users found.
                     </td>
                   </tr>

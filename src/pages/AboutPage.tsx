@@ -37,43 +37,43 @@ export function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold text-neutral-900">About Job Tracker</h1>
-        <p className="mt-2 text-sm text-neutral-600">
+        <h1 className="text-2xl font-semibold text-ink">About Job Tracker</h1>
+        <p className="mt-2 text-sm text-ink-2">
           Job Tracker is a personal job-hunting companion that pulls opportunities from the
           biggest job boards into one clean, searchable dashboard.
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="stagger grid gap-4 sm:grid-cols-2">
         {features.map(({ icon: Icon, title, text }) => (
-          <div key={title} className="rounded-xl border border-neutral-200 bg-white p-5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-900">
-              <Icon className="h-4.5 w-4.5 text-white" />
+          <div key={title} className="rounded-xl border border-line bg-surface p-5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink">
+              <Icon className="h-4.5 w-4.5 text-canvas" />
             </div>
-            <h2 className="mt-3 text-sm font-semibold text-neutral-900">{title}</h2>
-            <p className="mt-1 text-sm text-neutral-600">{text}</p>
+            <h2 className="mt-3 text-sm font-semibold text-ink">{title}</h2>
+            <p className="mt-1 text-sm text-ink-2">{text}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-neutral-200 bg-white p-5">
-        <h2 className="text-sm font-semibold text-neutral-900">How it works</h2>
-        <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-neutral-600">
+      <div className="rounded-xl border border-line bg-surface p-5">
+        <h2 className="text-sm font-semibold text-ink">How it works</h2>
+        <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-ink-2">
           <li>
-            <span className="font-medium text-neutral-800">Browse freely</span> — the dashboard
+            <span className="font-medium text-ink">Browse freely</span> — the dashboard
             and job listings are public, no account needed.
           </li>
           <li>
-            <span className="font-medium text-neutral-800">Create an account</span> to save jobs
+            <span className="font-medium text-ink">Create an account</span> to save jobs
             and keep your shortlist across devices.
           </li>
           <li>
-            <span className="font-medium text-neutral-800">Admins keep the feed fresh</span> by
+            <span className="font-medium text-ink">Admins keep the feed fresh</span> by
             running imports from Wuzzuf, LinkedIn, Glassdoor, and Indeed — manually from the
             admin panel or automatically every day via a scheduled cron job.
           </li>
           <li>
-            <span className="font-medium text-neutral-800">Apply with confidence</span> — every
+            <span className="font-medium text-ink">Apply with confidence</span> — every
             job links back to the original posting.
           </li>
         </ol>

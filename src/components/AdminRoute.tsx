@@ -24,11 +24,11 @@ export function AdminRoute({ children }: { children: ReactNode }) {
     return (
       <div className="mx-auto max-w-md">
         <Card className="flex flex-col items-center px-6 py-12 text-center">
-          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 dark:bg-amber-500/10">
             <ShieldAlert className="h-6 w-6 text-amber-500" />
           </div>
-          <h3 className="text-base font-semibold text-neutral-900">Admin access required</h3>
-          <p className="mt-1 text-sm text-neutral-500">
+          <h3 className="text-base font-semibold text-ink">Admin access required</h3>
+          <p className="mt-1 text-sm text-ink-3">
             Your account doesn't have permission to view this page.
           </p>
         </Card>
