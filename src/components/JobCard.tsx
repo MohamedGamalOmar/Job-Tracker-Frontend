@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import { ExternalLink, MapPin } from 'lucide-react';
-import { formatDate, formatExperience, formatSalary, truncate } from '../lib/format';
+import { formatExperience, formatRelativeDate, formatSalary, truncate } from '../lib/format';
 import { Badge, Card, SourceBadge, WorkplaceBadge } from './ui';
 import { SaveButton } from './SaveButton';
 import type { Job } from '../types';
 
 export function JobCard({ job }: { job: Job }) {
   const salary = formatSalary(job);
+  const posted = formatRelativeDate(job.postedAt);
+  const isRecent = posted.daysAgo !== null && posted.daysAgo < 14;
   const skills = job.requiredSkills.slice(0, 4);
   const extraSkills = job.requiredSkills.length - skills.length;
 
@@ -35,7 +37,12 @@ export function JobCard({ job }: { job: Job }) {
             {job.location}
           </span>
         )}
-        <span>Posted {formatDate(job.postedAt)}</span>
+        <span title={job.postedAt ? new Date(job.postedAt).toLocaleDateString() : undefined}>
+          Posted{' '}
+          <span className={isRecent ? 'font-medium text-emerald-700 dark:text-emerald-400' : undefined}>
+            {posted.label}
+          </span>
+        </span>
         <span>{formatExperience(job)}</span>
         <WorkplaceBadge type={job.workplaceType} />
         {salary && <span className="font-medium text-emerald-700 dark:text-emerald-400">{salary}</span>}
@@ -54,22 +61,24 @@ export function JobCard({ job }: { job: Job }) {
         </div>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
-        <Link
-          to={`/jobs/${job.id}`}
-          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-canvas shadow-sm transition-all duration-150 hover:bg-ink/85 active:scale-[0.97]"
-        >
-          View details
-        </Link>
-        <a
-          href={job.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-ink-3 transition-all duration-150 hover:bg-sunken hover:text-ink active:scale-[0.97]"
-        >
-          Open original
-          <ExternalLink className="h-3.5 w-3.5" />
-        </a>
+      <div className="mt-auto pt-3">
+        <div className="flex flex-wrap items-center gap-2 border-t border-line pt-4">
+          <Link
+            to={`/jobs/${job.id}`}
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-canvas shadow-sm transition-all duration-150 hover:bg-ink/85 active:scale-[0.97]"
+          >
+            View details
+          </Link>
+          <a
+            href={job.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-ink-3 transition-all duration-150 hover:bg-sunken hover:text-ink active:scale-[0.97]"
+          >
+            Open original
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        </div>
       </div>
     </Card>
   );

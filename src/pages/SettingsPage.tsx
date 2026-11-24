@@ -24,6 +24,7 @@ export function SettingsPage() {
         <p className="mt-1 text-sm text-ink-3">Connection and application settings.</p>
       </div>
 
+      {import.meta.env.DEV && (
       <Card className="p-6">
         <h3 className="text-base font-semibold text-ink">Backend connection</h3>
         <dl className="mt-4 space-y-3 text-sm">
@@ -60,6 +61,7 @@ export function SettingsPage() {
           Re-check connection
         </Button>
       </Card>
+      )}
 
       <Card className="p-6">
         <h3 className="text-base font-semibold text-ink">About</h3>

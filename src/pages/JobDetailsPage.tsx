@@ -8,6 +8,7 @@ import { Badge, Card, ErrorState, Skeleton, SourceBadge, WorkplaceBadge } from '
 import {
   formatDate,
   formatDateTime,
+  formatRelativeDate,
   formatExperience,
   formatSalary,
   sourceLabels,
@@ -140,9 +141,12 @@ export function JobDetailsPage() {
             {salary ?? job.salaryText ?? <NotSpecified />}
           </DetailRow>
           <DetailRow label="Posted date">
-            <span className="inline-flex items-center gap-1.5">
+            <span
+              className="inline-flex items-center gap-1.5"
+              title={formatDate(job.postedAt)}
+            >
               <Calendar className="h-4 w-4 text-ink-4" />
-              {formatDate(job.postedAt)}
+              {formatRelativeDate(job.postedAt).label}
             </span>
           </DetailRow>
           <DetailRow label="Experience">

@@ -25,7 +25,9 @@ const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/jobs', label: 'All Jobs', icon: Briefcase },
   { to: '/saved', label: 'Saved', icon: Bookmark },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  ...(import.meta.env.DEV
+    ? [{ to: '/settings', label: 'Settings', icon: Settings }]
+    : []),
   { to: '/about', label: 'About', icon: Info },
 ];
 

@@ -67,6 +67,17 @@ export function JobsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedTitle]);
 
+  // Keep inputs in sync when the URL changes externally (back/forward, shared links)
+  useEffect(() => {
+    setSearchInput((cur) => (cur === q ? cur : q));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q]);
+
+  useEffect(() => {
+    setTitleInput((cur) => (cur === title ? cur : title));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title]);
+
   const query = useQuery({
     queryKey: [
       'jobs',
