@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Bookmark,
@@ -106,11 +107,79 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+function ConfirmDialog({
+  open,
+  title,
+  message,
+  confirmLabel = 'Confirm',
+  danger,
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  title: string;
+  message: string;
+  confirmLabel?: string;
+  danger?: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') onCancel();
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [open, onCancel]);
+
+  if (!open) return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4 backdrop-blur-[2px]"
+      onClick={onCancel}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+    >
+      <div
+        className="animate-menu w-full max-w-sm rounded-2xl border border-line bg-surface p-5 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h3 className="text-base font-semibold text-ink">{title}</h3>
+        <p className="mt-1.5 text-sm text-ink-3">{message}</p>
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-lg px-3.5 py-2 text-sm font-medium text-ink-2 transition-colors duration-150 hover:bg-sunken hover:text-ink"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className={cn(
+              'rounded-lg px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 active:scale-[0.98]',
+              danger ? 'bg-red-600 hover:bg-red-500' : 'bg-ink hover:bg-ink/85',
+            )}
+          >
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 function UserMenu() {
   const { user, isAuthenticated, logout } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -131,6 +200,11 @@ function UserMenu() {
 
   function handleLogout() {
     setOpen(false);
+    setConfirmLogout(true);
+  }
+
+  function confirmAndLogout() {
+    setConfirmLogout(false);
     logout();
     navigate('/login', { replace: true });
   }
@@ -202,6 +276,16 @@ function UserMenu() {
             </div>
           </div>
         )}
+
+        <ConfirmDialog
+          open={confirmLogout}
+          title="Log out?"
+          message="You will need to sign in again to access saved jobs, imports, and admin tools."
+          confirmLabel="Log out"
+          danger
+          onConfirm={confirmAndLogout}
+          onCancel={() => setConfirmLogout(false)}
+        />
       </div>
     );
   }

@@ -1,7 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { getMe, login as apiLogin, register as apiRegister } from '../api/auth.api';
-import type { Credentials } from '../api/auth.api';
+import {
+  getMe,
+  login as apiLogin,
+  register as apiRegister,
+  verifyEmail as apiVerifyEmail,
+} from '../api/auth.api';
+import type { Credentials, RegisterResult } from '../api/auth.api';
 import { clearStoredToken, getStoredToken, setStoredToken } from '../api/axios';
 import type { User } from '../types';
 
@@ -11,7 +16,8 @@ interface AuthContextValue {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (credentials: Credentials) => Promise<void>;
-  register: (credentials: Credentials) => Promise<void>;
+  register: (credentials: Credentials) => Promise<RegisterResult>;
+  verifyEmail: (email: string, otp: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -68,7 +74,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const register = useCallback(async (credentials: Credentials) => {
-    const result = await apiRegister(credentials);
+    return apiRegister(credentials);
+  }, []);
+
+  const verifyEmail = useCallback(async (email: string, otp: string) => {
+    const result = await apiVerifyEmail(email, otp);
     setStoredToken(result.token);
     setToken(result.token);
     setUser(result.user);
@@ -94,10 +104,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: user !== null,
       login,
       register,
+      verifyEmail,
       logout,
       refreshUser,
     }),
-    [user, token, isLoading, login, register, logout, refreshUser],
+    [user, token, isLoading, login, register, verifyEmail, logout, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

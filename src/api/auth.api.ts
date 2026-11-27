@@ -16,8 +16,29 @@ export async function login(credentials: Credentials): Promise<AuthResponse> {
   return res.data.data;
 }
 
-export async function register(credentials: Credentials): Promise<AuthResponse> {
-  const res = await apiClient.post<ApiEnvelope<AuthResponse>>('/auth/register', credentials);
+export interface RegisterResult {
+  requiresVerification: boolean;
+  email: string;
+  devOtp?: string;
+}
+
+export async function register(credentials: Credentials): Promise<RegisterResult> {
+  const res = await apiClient.post<ApiEnvelope<RegisterResult>>('/auth/register', credentials);
+  return res.data.data;
+}
+
+export async function verifyEmail(email: string, otp: string): Promise<AuthResponse> {
+  const res = await apiClient.post<ApiEnvelope<AuthResponse>>('/auth/verify-email', {
+    email,
+    otp,
+  });
+  return res.data.data;
+}
+
+export async function resendVerification(email: string): Promise<RegisterResult> {
+  const res = await apiClient.post<ApiEnvelope<RegisterResult>>('/auth/resend-verification', {
+    email,
+  });
   return res.data.data;
 }
 

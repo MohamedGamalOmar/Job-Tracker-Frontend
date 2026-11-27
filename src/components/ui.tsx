@@ -7,6 +7,7 @@ import {
   type ButtonHTMLAttributes,
   type InputHTMLAttributes,
   type ReactNode,
+  type Ref,
   type TextareaHTMLAttributes,
 } from 'react';
 import { AlertCircle, Check, ChevronDown, Inbox, Loader2 } from 'lucide-react';
@@ -112,9 +113,14 @@ export function Button({
   );
 }
 
-export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
+export function Input({
+  className,
+  ref,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement> & { ref?: Ref<HTMLInputElement> }) {
   return (
     <input
+      ref={ref}
       className={cn(
         'w-full rounded-lg border border-line-strong bg-surface px-3 py-2 text-sm text-ink shadow-[0_1px_2px_rgb(0_0_0/0.03)] placeholder-ink-4 outline-none dark:shadow-none transition-all duration-150 focus:border-ink-3 focus:ring-2 focus:ring-ink/10 disabled:bg-canvas',
         className,
