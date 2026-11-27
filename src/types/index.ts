@@ -124,3 +124,17 @@ export interface AuthResponse {
   user: User;
   token: string;
 }
+
+export interface JobPreferences {
+  desiredTitle: string | null;
+  experienceLevel: string | null;
+  skills: string[];
+  workplaceType: 'remote' | 'hybrid' | 'onsite' | null;
+  postedWithinDays: number | null;
+  location: string | null;
+}
+
+export interface JobListResponse {
+  jobs: Job[];
+  meta: JobListMeta;
+}

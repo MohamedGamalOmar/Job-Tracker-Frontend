@@ -5,7 +5,7 @@ import { Badge, Card, SourceBadge, WorkplaceBadge } from './ui';
 import { SaveButton } from './SaveButton';
 import type { Job } from '../types';
 
-export function JobCard({ job }: { job: Job }) {
+export function JobCard({ job, recommended = false }: { job: Job; recommended?: boolean }) {
   const salary = formatSalary(job);
   const posted = formatRelativeDate(job.postedAt);
   const isRecent = posted.daysAgo !== null && posted.daysAgo < 14;
@@ -26,6 +26,7 @@ export function JobCard({ job }: { job: Job }) {
         </div>
         <div className="flex items-center gap-1">
           <SaveButton jobId={job.id} saved={job.saved} />
+          {recommended && <Badge tone="purple">For you</Badge>}
           <SourceBadge source={job.source} />
         </div>
       </div>

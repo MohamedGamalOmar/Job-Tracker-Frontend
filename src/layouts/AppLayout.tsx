@@ -11,6 +11,7 @@ import {
   Moon,
   Settings,
   ShieldCheck,
+  SlidersHorizontal,
   Sun,
   Upload,
   Users,
@@ -26,6 +27,7 @@ const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/jobs', label: 'All Jobs', icon: Briefcase },
   { to: '/saved', label: 'Saved', icon: Bookmark },
+  { to: '/preferences', label: 'Preferences', icon: SlidersHorizontal },
   ...(import.meta.env.DEV
     ? [{ to: '/settings', label: 'Settings', icon: Settings }]
     : []),

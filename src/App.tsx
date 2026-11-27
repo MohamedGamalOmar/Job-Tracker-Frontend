@@ -7,6 +7,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { JobsPage } from './pages/JobsPage';
 import { JobDetailsPage } from './pages/JobDetailsPage';
 import { SavedJobsPage } from './pages/SavedJobsPage';
+import { PreferencesPage } from './pages/PreferencesPage';
 import { ImportPage } from './pages/ImportPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { AboutPage } from './pages/AboutPage';
@@ -37,6 +38,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <SavedJobsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="preferences"
+              element={
+                <ProtectedRoute>
+                  <PreferencesPage />
                 </ProtectedRoute>
               }
             />

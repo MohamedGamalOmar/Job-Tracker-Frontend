@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Search, SlidersHorizontal, X } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, Search, SlidersHorizontal, Sparkles, X } from 'lucide-react';
 import { listJobs } from '../api/jobs.api';
+import { getRecommended } from '../api/preferences.api';
 import { getApiErrorMessage } from '../api/axios';
+import { useAuth } from '../auth/AuthContext';
 import { JobCard } from '../components/JobCard';
 import { Button, EmptyState, ErrorState, Input, JobCardSkeleton, Select } from '../components/ui';
 import { useDebounce } from '../hooks/useDebounce';
@@ -34,6 +36,7 @@ export function JobsPage() {
   const workplaceType = searchParams.get('workplaceType') ?? '';
   const sortBy = (searchParams.get('sortBy') ?? 'postedAt') as 'postedAt' | 'collectedAt';
   const page = Math.max(1, Number(searchParams.get('page') ?? '1') || 1);
+  const view = searchParams.get('view') === 'recommended' ? 'recommended' : 'all';
 
   const [searchInput, setSearchInput] = useState(q);
   const debouncedSearch = useDebounce(searchInput);
@@ -201,22 +204,63 @@ export function JobsPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-semibold text-ink">All jobs</h2>
+          <h2 className="text-xl font-semibold text-ink">
+            {view === 'recommended' ? 'Recommended' : 'All jobs'}
+          </h2>
           <p className="mt-1 text-sm text-ink-3">
-            {meta ? `${meta.total} job${meta.total === 1 ? '' : 's'} found` : 'Loading…'}
+            {view === 'recommended'
+              ? 'Jobs matching your preferences'
+              : meta
+                ? `${meta.total} job${meta.total === 1 ? '' : 's'} found`
+                : 'Loading…'}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="secondary" onClick={() => setFiltersOpen((v) => !v)} className="lg:hidden">
-            <SlidersHorizontal className="h-4 w-4" />
-            Filters
-            {activeFilterCount > 0 && (
-              <span className="ml-1 rounded-full bg-ink px-1.5 text-xs text-canvas">{activeFilterCount}</span>
-            )}
-          </Button>
-        </div>
+        {view === 'all' && (
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" onClick={() => setFiltersOpen((v) => !v)} className="lg:hidden">
+              <SlidersHorizontal className="h-4 w-4" />
+              Filters
+              {activeFilterCount > 0 && (
+                <span className="ml-1 rounded-full bg-ink px-1.5 text-xs text-canvas">{activeFilterCount}</span>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
 
+      <div className="flex w-fit gap-1 rounded-lg bg-sunken p-1">
+        {(
+          [
+            { key: 'all', label: 'All jobs', icon: undefined },
+            { key: 'recommended', label: 'Recommended', icon: Sparkles },
+          ] as const
+        ).map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() =>
+              setSearchParams((prev) => {
+                const next = new URLSearchParams(prev);
+                if (key === 'all') next.delete('view');
+                else next.set('view', 'recommended');
+                next.delete('rpage');
+                next.delete('page');
+                return next;
+              })
+            }
+            className={`flex items-center gap-1.5 rounded-md px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
+              view === key ? 'bg-surface text-ink shadow-sm' : 'text-ink-3 hover:text-ink'
+            }`}
+          >
+            {Icon && <Icon className="h-3.5 w-3.5" />}
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {view === 'recommended' ? (
+        <RecommendedJobs />
+      ) : (
+        <>
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-4" />
@@ -323,6 +367,123 @@ export function JobsPage() {
           </div>
         </div>
       )}
+        </>
+      )}
     </div>
+  );
+}
+
+function RecommendedJobs() {
+  const { user, isAuthenticated } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const rpage = Math.max(1, Number(searchParams.get('rpage') ?? '1') || 1);
+
+  const query = useQuery({
+    queryKey: ['recommended', user?.id ?? 'anon', rpage],
+    queryFn: () => getRecommended(rpage, PAGE_SIZE),
+    enabled: isAuthenticated,
+    retry: false,
+  });
+
+  const setRPage = (p: number) =>
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (p <= 1) next.delete('rpage');
+      else next.set('rpage', String(p));
+      return next;
+    });
+
+  if (!isAuthenticated) {
+    return (
+      <EmptyState
+        title="Log in to see recommendations"
+        description="Recommendations are personalized to your job preferences."
+        action={
+          <Link to="/login">
+            <Button variant="secondary">Log in</Button>
+          </Link>
+        }
+      />
+    );
+  }
+
+  const noPrefs =
+    query.isError &&
+    (query.error as { response?: { status?: number } })?.response?.status === 404;
+
+  if (query.isLoading) {
+    return (
+      <div className="stagger grid gap-4 lg:grid-cols-2">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <JobCardSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
+
+  if (noPrefs) {
+    return (
+      <EmptyState
+        title="No job preferences yet"
+        description="Set your desired title, skills, and preferences to get personalized job recommendations."
+        action={
+          <Link to="/preferences">
+            <Button>Set preferences</Button>
+          </Link>
+        }
+      />
+    );
+  }
+
+  if (query.isError) {
+    return <ErrorState message={getApiErrorMessage(query.error)} onRetry={() => query.refetch()} />;
+  }
+
+  const jobs = query.data?.jobs ?? [];
+  const meta = query.data?.meta;
+
+  if (jobs.length === 0) {
+    return (
+      <EmptyState
+        title="No recommended jobs right now"
+        description="Try broadening your preferences to match more openings."
+        action={
+          <Link to="/preferences">
+            <Button variant="secondary">Edit preferences</Button>
+          </Link>
+        }
+      />
+    );
+  }
+
+  return (
+    <>
+      <div className="stagger grid gap-4 lg:grid-cols-2">
+        {jobs.map((job) => (
+          <JobCard key={job.id} job={job} recommended />
+        ))}
+      </div>
+      {meta && meta.totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-ink-3">
+            Page {meta.page} of {meta.totalPages}
+          </p>
+          <div className="flex gap-2">
+            <Button variant="secondary" disabled={rpage <= 1} onClick={() => setRPage(rpage - 1)}>
+              <ChevronLeft className="h-4 w-4" />
+              Previous
+            </Button>
+            <Button
+              variant="secondary"
+              disabled={rpage >= meta.totalPages}
+              onClick={() => setRPage(rpage + 1)}
+            >
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
