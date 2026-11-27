@@ -175,7 +175,7 @@ function ConfirmDialog({
 }
 
 function UserMenu() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -207,6 +207,15 @@ function UserMenu() {
     setConfirmLogout(false);
     logout();
     navigate('/login', { replace: true });
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-2" aria-hidden="true">
+        <div className="h-8 w-8 animate-pulse rounded-full bg-sunken" />
+        <div className="hidden h-4 w-32 animate-pulse rounded-md bg-sunken sm:block" />
+      </div>
+    );
   }
 
   if (isAuthenticated && user) {
